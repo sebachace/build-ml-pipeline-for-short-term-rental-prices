@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-{{cookiecutter.long_description}}
+tbd
 """
 import argparse
 import logging
@@ -13,7 +13,7 @@ logger = logging.getLogger()
 
 def go(args):
 
-    run = wandb.init(job_type="{{cookiecutter.job_type}}")
+    run = wandb.init(job_type="basic_cleaning")
     run.config.update(args)
 
     # Download input artifact. This will also log that this script is using this
@@ -27,16 +27,16 @@ def go(args):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="{{cookiecutter.short_description}}")
+    parser = argparse.ArgumentParser(description="basic cleanining")
 
-{% for arg_name in cookiecutter.parameters.split(",") %}
+
     parser.add_argument(
-        "--{{arg_name}}", 
+        "--parameter_list", 
         type=## INSERT TYPE HERE: str, float or int,
         help=## INSERT DESCRIPTION HERE,
         required=True
     )
-{% endfor %}
+
 
     args = parser.parse_args()
 
