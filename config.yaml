@@ -1,5 +1,5 @@
 main:
-  components_repository: "https://github.com/udacity/build-ml-pipeline-for-short-term-rental-prices/"
+  components_repository: "https://github.com/udacity/build-ml-pipeline-for-short-term-rental-prices#components"
   # All the intermediate files will be copied to this directory at the end of the run.
   # Set this to null if you are running in prod
   project_name: nyc_airbnb
@@ -10,29 +10,40 @@ etl:
   min_price: 10  # dollars
   max_price: 350  # dollars
 data_check:
+  csv: clean_sample.csv:latest
+  ref: clean_sample.csv:reference
   kl_threshold: 0.2
-modeling:
-  # Fraction of data to use for test (the remaining will be used for train and validation)
-  test_size: 0.2
-  # Fraction of remaining data to use for validation
-  val_size: 0.2
-  # Fix this for reproducibility, change to have new splits
+  min_price: 10  # dollars
+  max_price: 350  # dollars
+data_split:
+  input: clean_sample.csv:latest
+  test_size: 0.3
   random_seed: 42
-  # Column to use for stratification (use "none" for no stratification)
+modeling:
+  input: trainval_data.csv:latest
+  # Test size proportion
+  test_size: 0.2
+  # Validation size proportion
+  val_size: 0.2
+  # Get reproducible results
+  random_seed: 42
+  # Column to use for stratification, or none
   stratify_by: "neighbourhood_group"
-  # Maximum number of features to consider for the TFIDF applied to the title of the
-  # insertion (the column called "name")
+  # n_features for TFIDF
   max_tfidf_features: 5
-  # NOTE: you can put here any parameter that is accepted by the constructor of
-  # RandomForestRegressor. This is a subsample, but more could be added:
+  # NOTE: you can put here any parameter that is accepted by the model constructor
   random_forest:
     n_estimators: 100
     max_depth: 15
     min_samples_split: 4
     min_samples_leaf: 3
-    # Here -1 means all available cores
+    # -1 is to set all available cores as workers
     n_jobs: -1
     criterion: mae
     max_features: 0.5
     # DO not change the following
     oob_score: true
+# Get Ready for production (eventually)
+test_model:
+  mlflow_model: random_forest_export:prod
+  test_dataset: test_data.csv:latest
